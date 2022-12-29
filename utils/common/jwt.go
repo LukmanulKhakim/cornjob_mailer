@@ -9,11 +9,10 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-func GenerateToken(id uint, role uint) string {
+func GenerateToken(id uint) string {
 	claim := make(jwt.MapClaims)
 	claim["authorized"] = true
 	claim["id"] = id
-	claim["role"] = role
 	claim["expired"] = time.Now().Add(time.Hour * 24).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
@@ -26,13 +25,12 @@ func GenerateToken(id uint, role uint) string {
 	return str
 }
 
-func ExtractToken(c echo.Context) (uint, uint) {
+func ExtractToken(c echo.Context) uint {
 	token := c.Get("user").(*jwt.Token)
 	if token.Valid {
 		claim := token.Claims.(jwt.MapClaims)
-		id := uint(claim["id"].(float64))
-		role := uint(claim["role"].(float64))
-		return id, role
+		return uint(claim["id"].(float64))
+
 	}
-	return 0, 0
+	return 0
 }

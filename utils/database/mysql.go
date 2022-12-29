@@ -2,6 +2,7 @@ package database
 
 import (
 	"cornjobmailer/config"
+	"cornjobmailer/features/user/repository"
 	"fmt"
 
 	"github.com/labstack/gommon/log"
@@ -24,6 +25,13 @@ func InitDB(c *config.AppConfig) *gorm.DB {
 		return nil
 	}
 
-	//migrateDB(db)
+	migrateDB(db)
 	return db
+}
+
+func migrateDB(db *gorm.DB) {
+	db.AutoMigrate(&repository.User{})
+	db.AutoMigrate(&repository.Wallet{})
+	db.AutoMigrate(&repository.Currency{})
+	db.AutoMigrate(&repository.Mailer{})
 }
