@@ -23,6 +23,7 @@ func New(repo domain.Repository) domain.Service {
 
 // Register implements domain.Service
 func (us *userService) Register(data domain.UserCore) (domain.UserCore, error) {
+
 	generate, err := bcrypt.GenerateFromPassword([]byte(data.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Error("error on bcrypt", err.Error())
