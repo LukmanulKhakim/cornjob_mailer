@@ -21,6 +21,7 @@ func New(e *echo.Echo, srv domain.Service) {
 
 	e.POST("/register", handler.Register())
 	e.POST("/login", handler.Login())
+	e.GET("/user", handler.ShowAll())
 }
 
 func (uh *userHandler) Register() echo.HandlerFunc {
@@ -81,5 +82,16 @@ func (uh *userHandler) Login() echo.HandlerFunc {
 
 		return nil
 
+	}
+}
+
+func (uh *userHandler) ShowAll() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		res, err := uh.srv.ShowAll()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, FailResponse("there is problem on server"))
+		}
+
+		return c.JSON(http.StatusOK, SuccessResponse("success get all data", ToResponse(res, "all")))
 	}
 }
