@@ -72,7 +72,7 @@ func (uh *userHandler) Login() echo.HandlerFunc {
 			} else {
 				return c.JSON(http.StatusInternalServerError, FailResponse("there is problem on server"))
 			}
-		} else if strings.Contains(res.Status, "Pending") {
+		} else if strings.Contains(res.Status, "pending") {
 			return c.JSON(http.StatusBadRequest, FailResponse("belum diaktivasi"))
 		} else if res.ID != 0 {
 			res.Token = common.GenerateToken(uint(res.ID))

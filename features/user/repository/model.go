@@ -58,10 +58,10 @@ func FromDomain(uc domain.UserCore) User {
 			Amount:     uc.Wallet.Amount},
 		Mailer: Mailer{
 			Model:  gorm.Model{ID: um.ID_verifikasi},
-			IDUser: um.IDUser,
-			Email:  um.Email,
-			Pin:    um.Pin,
-			Status: um.Status},
+			IDUser: uc.Mailer.IDUser,
+			Email:  uc.Mailer.Email,
+			Pin:    uc.Mailer.Pin,
+			Status: uc.Mailer.Status},
 	}
 }
 

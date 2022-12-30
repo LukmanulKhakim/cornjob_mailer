@@ -31,7 +31,16 @@ func (us *userService) Register(data domain.UserCore) (domain.UserCore, error) {
 	}
 	data.Password = string(generate)
 	orgPass := data.Password
-	data.Status = "Pending"
+	data.Status = "pending"
+	data.Wallet.IDCurrency = 1
+	data.Wallet.IDUser = data.ID
+	data.Wallet.Amount = 0
+
+	data.Mailer.Email = data.Email
+	data.Mailer.IDUser = data.ID
+	data.Mailer.Status = "pending"
+	data.Mailer.Pin = ""
+
 	res, err := us.qry.Add(data)
 	if err != nil {
 		if strings.Contains(err.Error(), "Duplicate") {

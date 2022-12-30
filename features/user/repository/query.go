@@ -20,6 +20,7 @@ func New(db *gorm.DB) domain.Repository {
 // Add implements domain.Repository
 func (rq *repoQuery) Add(data domain.UserCore) (domain.UserCore, error) {
 	var cnv User = FromDomain(data)
+
 	if err := rq.db.Create(&cnv).Error; err != nil {
 		log.Error("error on adding user", err.Error())
 		return domain.UserCore{}, err
