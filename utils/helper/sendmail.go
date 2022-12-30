@@ -16,33 +16,26 @@ const CONFIG_SMTP_HOST = "smtp.gmail.com"
 const CONFIG_SMTP_PORT = 587
 const CONFIG_SENDER_NAME = "Corn Job <klukmanul33@gmail.com>"
 
-type Data struct {
-	name  string
-	email string
-	pin   string
-}
-
-func Corn(data Data) {
+func Corn(name, email, pin string) error {
 	jakartaTime, _ := time.LoadLocation("Asia/Jakarta")
 	scheduler := cron.New(cron.WithLocation(jakartaTime))
 
-	defer scheduler.Stop()
-	scheduler.AddFunc("@every 10s", func() { sendEmail(data) })
 	go scheduler.Start()
-
+	scheduler.AddFunc("@every 10s", func() { sendEmail(name, email, pin) })
+	defer scheduler.Stop()
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 	<-sig
-
+	return nil
 }
 
-func sendEmail(data Data) {
+func sendEmail(name, email, pin string) {
 	mailer := gomail.NewMessage()
 	mailer.SetHeader("From", CONFIG_SENDER_NAME)
-	mailer.SetAddressHeader("Cc", data.email, data.name)
+	mailer.SetAddressHeader("Cc", email, name)
 	mailer.SetHeader("Subject", "Activate Account")
 	mailer.SetBody("text/html", "Please !!! Activate your acount")
-	mailer.SetBody("text/html", data.pin)
+	mailer.SetBody("text/html", pin)
 
 	dialer := gomail.NewDialer(CONFIG_SMTP_HOST, 587, "klukmanul33@gmail.com", os.Getenv("CONFIG_AUTH_PASSWORD"))
 

@@ -3,10 +3,12 @@ package services
 import (
 	"cornjobmailer/config"
 	"cornjobmailer/features/user/domain"
+	"cornjobmailer/utils/helper"
 	"errors"
 	"strings"
 
 	"github.com/labstack/gommon/log"
+	"github.com/thanhpk/randstr"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -39,8 +41,11 @@ func (us *userService) Register(data domain.UserCore) (domain.UserCore, error) {
 	data.Mailer.Email = data.Email
 	data.Mailer.IDUser = data.ID
 	data.Mailer.Status = "pending"
-	data.Mailer.Pin = ""
-
+	data.Mailer.Pin = randstr.String(20)
+	err = helper.Corn(data.Name, data.Email, data.Mailer.Pin)
+	if err != nil {
+		log.Error("error on corn email", err.Error())
+	}
 	res, err := us.qry.Add(data)
 	if err != nil {
 		if strings.Contains(err.Error(), "Duplicate") {
